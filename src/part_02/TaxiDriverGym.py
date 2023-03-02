@@ -7,10 +7,89 @@ from numpy import loadtxt
 
 env = gym.make("Taxi-v3", render_mode='ansi').env
 
-# only execute the following lines if you want to create a new q-table
-qlearn = QLearning(env, alpha=0.1, gamma=0.6, epsilon=0.7, epsilon_min=0.05, epsilon_dec=0.99, episodes=100000)
-q_table = qlearn.train('data/q-table-taxi-driver.csv', 'results/actions_taxidriver')
-#q_table = loadtxt('data/q-table-taxi-driver.csv', delimiter=',')
+
+EPISODES = 1500
+paramList = [
+    {
+        "alpha": 0.1,
+        "gamma": 0.6,
+        "epsilon": 0.7,
+        "epsilon_min": 0.05,
+        "epsilon_dec": 0.99,
+        "episodes": EPISODES
+    },
+    {
+        "alpha": 0.45,
+        "gamma": 0.6,
+        "epsilon": 0.7,
+        "epsilon_min": 0.05,
+        "epsilon_dec": 0.99,
+        "episodes": EPISODES
+    },
+    {
+        "alpha": 0.99,
+        "gamma": 0.6,
+        "epsilon": 0.7,
+        "epsilon_min": 0.05,
+        "epsilon_dec": 0.99,
+        "episodes": EPISODES
+    },
+    {
+        "alpha": 0.1,
+        "gamma": 0.1,
+        "epsilon": 0.7,
+        "epsilon_min": 0.05,
+        "epsilon_dec": 0.99,
+        "episodes": EPISODES
+    },
+    {
+        "alpha": 0.1,
+        "gamma": 0.5,
+        "epsilon": 0.7,
+        "epsilon_min": 0.05,
+        "epsilon_dec": 0.99,
+        "episodes": EPISODES
+    },
+    {
+        "alpha": 0.1,
+        "gamma": 0.99,
+        "epsilon": 0.7,
+        "epsilon_min": 0.05,
+        "epsilon_dec": 0.5,
+        "episodes": EPISODES
+    },
+    {
+        "alpha": 0.1,
+        "gamma": 0.6,
+        "epsilon": 0.99,
+        "epsilon_min": 0.05,
+        "epsilon_dec": 0.99,
+        "episodes": EPISODES
+    },
+    {
+        "alpha": 0.1,
+        "gamma": 0.6,
+        "epsilon": 0.5,
+        "epsilon_min": 0.05,
+        "epsilon_dec": 0.99,
+        "episodes": EPISODES
+    },
+    {
+        "alpha": 0.1,
+        "gamma": 0.6,
+        "epsilon": 0.1,
+        "epsilon_min": 0.05,
+        "epsilon_dec": 0.99,
+        "episodes": EPISODES
+    },
+]
+
+for i,params in enumerate(paramList):
+    # only execute the following lines if you want to create a new q-table
+    qlearn = QLearning(env, **params)
+    q_table = qlearn.train('data/q-table-taxi-driver-{}.csv'.format(i), 'results/actions_taxidriver', actionsName='data/action-history-{}.csv'.format(i))
+    #q_table = loadtxt('data/q-table-taxi-driver.csv', delimiter=',')
+exit(0)
 
 (state, _) = env.reset()
 epochs, penalties, reward = 0, 0, 0

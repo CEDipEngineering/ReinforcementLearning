@@ -27,13 +27,14 @@ class QLearning:
             return self.env.action_space.sample() # Explore action space
         return np.argmax(self.q_table[state]) # Exploit learned values
 
-    def train(self, filename, plotFile):
+    def train(self, filename, plotFile, actionsName):
         actions_per_episode = []
         for i in range(1, self.episodes+1):
             (state, _) = self.env.reset()
             reward = 0
             done = False
             actions = 0
+            rewards = 0
 
             while not done:
                 action = self.select_action(state)
@@ -46,9 +47,10 @@ class QLearning:
                 self.q_table[state, action] = old_value + new_value
                 # atualiza para o novo estado
                 state = next_state
-                actions=actions+1
+                # actions=actions+1
+                rewards += reward
 
-            actions_per_episode.append(actions)
+            actions_per_episode.append(rewards)
             if i % 100 == 0:
                 sys.stdout.write("Episodes: " + str(i) +'\r')
                 sys.stdout.flush()
@@ -57,6 +59,7 @@ class QLearning:
                 self.epsilon = self.epsilon * self.epsilon_dec
 
         savetxt(filename, self.q_table, delimiter=',')
+        savetxt(actionsName, actions_per_episode, delimiter=',')
         if (plotFile is not None): self.plotactions(plotFile, actions_per_episode)
         return self.q_table
 
